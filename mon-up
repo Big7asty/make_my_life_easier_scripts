@@ -1,0 +1,112 @@
+#!/bin/bash
+# Monitor mode made easy
+
+echo $' |----------------------------------------------------------|'
+echo $' |            .            .                                |'
+echo $' |           .  .           .                               |'
+echo $' |          .  ,  .    . ..  .                              |'
+echo $' |         .. .. ,, .. ,, ,. ..                             |'
+echo $' |          . .,  * *..*  .  .                              |'
+echo $' |          .. .,   *.   ,  ..                              |'
+echo $' |            .     *.     .                                |'
+echo $' |                  *.                                      |'
+echo $' |                  *.                                      |'
+echo $' |                  ..                                      |'
+echo $' |                  .                                       |'
+echo $' |                  .                                       |'
+echo $' |                  .                                       |'
+echo $' |                                                          |'
+echo $' |                 ..............................           |'
+echo $' |                ..........................*&...           |'
+echo $' |                ...............................           |'
+echo $' |                         .............                    |'
+echo $' |                                                          |'
+echo $' |----------------------------------------------------------|'
+echo $' |                    Big7asty Monitor mode                 |'
+echo $' |----------------------------------------------------------|'
+echo $' '
+echo $' ------------------------------------------------------------'
+echo $' 		Physical or Virtual Access point?'
+echo $' ------------------------------------------------------------'
+echo $' 			1 - Physical'
+echo $' 			2 - Virtual'
+
+read varinterface
+
+#Physical wireless interface:
+#Selects channel
+#MAC settings
+#Spins up wlan0mon
+airmon-ng check kill wlan0 > /dev/null 2>&1
+if [ $varinterface = 1 ]; then
+	echo $'		        --------------'
+	echo $'		        Which channel?'
+        echo $'	                --------------'
+	echo $'               Enter single or multiple channels'
+	echo $'            ie 1 for single or 1, 6, 9 for multiple'
+        echo $'                Leave blank for channel hopping'
+	read varchannel
+	airmon-ng start wlan0 $varchannel
+	echo $'                        -------------  '
+	echo $'                         MAC Address   '
+	echo $'                        -------------  '
+	echo $'                         d - Default   '
+	echo $'                         r - Random    '
+	echo $'                         c - Custom    '
+	read varmac
+	if [ $varmac = r ]; then
+		iwconfig wlan0mon | grep wlan0mon
+		ifconfig wlan0mon down
+		macchanger -r wlan0mon
+		ifconfig wlan0mon up
+	elif [ $varmac = d ]; then
+		iwconfig wlan0mon | grep wlan0mon
+		macchanger -s wlan0mon
+	elif [ $varmac = c ]; then
+		echo $'                        -------------'
+		echo $'                           Set MAC   '
+		echo $'                        -------------'
+		ifconfig wlan0mon down
+		read varmacset 
+		macchanger -m $varmacset wlan0mon
+		ifconfig wlan0mon up
+	fi
+
+#Virtual wireless interface:
+#Spins up a VAP
+#Selects channel
+#MAC settings
+#Brings up interface
+elif [ $varinterface = 2 ]; then
+        iw dev wlan0 interface add mon0 type monitor
+        echo $'	                --------------'
+        echo $'	                Which channel?'
+        echo $'	                --------------'
+        echo $'	        Leave blank for channel hopping'
+        read varchannel
+        iw dev wlan0 set channel $varchannel > /dev/null 2>&1
+        echo $'                        -------------  '
+        echo $'                         MAC Address   '
+        echo $'                        -------------  '
+        echo $'                         d - Default   '
+        echo $'                         r - Random    '
+        echo $'                         c - Custom    '
+        read varmac
+        if [ $varmac = r ]; then
+                iwconfig mon0 | grep mon0
+                ifconfig mon0 down
+                macchanger -r mon0
+                ifconfig mon0 up
+        elif [ $varmac = d ]; then
+                iwconfig mon0 | grep mon0
+                macchanger -s mon0
+        elif [ $varmac = c ]; then
+                echo $'                        -------------'
+                echo $'                           Set MAC   '
+                echo $'                        -------------'
+                ifconfig mon0 down
+                read varmacset 
+                macchanger -m $varmacset mon0
+                ifconfig mon0 up
+	fi
+fi

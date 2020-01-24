@@ -1,0 +1,46 @@
+#!/bin/bash
+# Brings down interface. Destroys it if virtual
+
+echo $' |----------------------------------------------------------|'
+echo $' |            .            .                                |'
+echo $' |           .  .           .                               |'
+echo $' |          .  ,  .    . ..  .                              |'
+echo $' |         .. .. ,, .. ,, ,. ..                             |'
+echo $' |          . .,  * *..*  .  .                              |'
+echo $' |          .. .,   *.   ,  ..                              |'
+echo $' |            .     *.     .                                |'
+echo $' |                  *.                                      |'
+echo $' |                  *.                                      |'
+echo $' |                  ..                                      |'
+echo $' |                  .                                       |'
+echo $' |                  .                                       |'
+echo $' |                  .                                       |'
+echo $' |                                                          |'
+echo $' |                 ..............................           |'
+echo $' |                ..........................*&...           |'
+echo $' |                ...............................           |'
+echo $' |                         .............                    |'
+echo $' |                                                          |'
+echo $' |----------------------------------------------------------|'
+echo $' |                    Big7asty Monitor mode                 |'
+echo $' |----------------------------------------------------------|'
+
+iwconfig wlan0mon > interface.txt
+iwconfig mon0 >> interface.txt
+
+#Pulls out of monitor mode
+grep wlan0mon interface.txt > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+        airmon-ng stop wlan0mon > /dev/null 2>&1
+fi
+
+#Pulls down interface
+#Then destroys it
+grep mon0 interface.txt > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+        ifconfig mon0 down > /dev/null 2>&1
+        iw dev mon0 interface del > /dev/null 2>&1
+fi
+
+rm -rf interface.txt
+echo $'Interface brought down'
