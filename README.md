@@ -25,7 +25,6 @@ Simple script for constructing password lists in a definable way for password sp
 
 # Installation
 
-All scripts need to be made executable with;
-  chmod 755 <script name>
-
+All scripts need to be made executable with
+chmod 755 wherethef.py
 
