@@ -4,7 +4,7 @@ Repo of tools I have built that make life easier, but not worth a dedicated repo
 
 # ap_sync_assist
 
-Allows for quick check of your wireless attack card's channel when in monitor mode, or a quick scan of in range access points when in managed mode. Compatable with AWUS036NHA Alfa card. Works best when copied to /usr/local/bin after making executable.
+Allows for quick check of your wireless attack card's channel when in monitor mode, or a quick scan of in range access points when in managed mode. Compatable with AWUS036NHA Alfa card. Works best when copied to /usr/local/bin after making executable. Built to compliment Aicrack-ng suite usage.
 
 # Mon-up
 
